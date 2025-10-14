@@ -28,33 +28,51 @@
     <main class="container">
         <div class="row">
             <div class="col">
-                <form action="#" method="get">
+                <form action="#" method="get" id="frmSearch" class="row mb-3">
+                    <div class="mb-3">
+                        <div class="col-2">
 
-                    <input type="text" id="search" name="inSearch" placeholder="Enter keyword here..">
-                    <button type="submit" style="color: green;">Search</button>
-                    <select name="country" id="countryid">
-                        <option value="all">All countries</option>
-                        <option value="Belgium">Belgium</option>
-                        <option value="France">France</option>
-                        <option value="Portugal">Portugal</option>
-                        <option value="Spain">Spain</option>
-                    </select>
+                            <input type="text" id="search" name="inSearch" placeholder="Enter keyword here..">
+                        </div>
+                        <div class="col-1">
+                            <button type="button" id="btSearch" class="btn btn-primary">Search</button>
+                        </div>
 
-                    <select name="year" id="yearid">
-                        <option value="all">All Years</option>
-                        <option value="Belgium">2025</option>
-                        <option value="France">2024</option>
-                        <option value="Portugal">2023</option>
-                        <option value="Spain">2022</option>
-                    </select>
-                    <button type="submit" style="color: blue;">Filter</button>
+                        <div class="col-2">
+                            <select name="country" id="countryid" class="frm=select">
+                                <option value="all">All countries</option>
+                                <option value="Belgium">Belgium</option>
+                                <option value="France">France</option>
+                                <option value="Portugal">Portugal</option>
+                                <option value="Spain">Spain</option>
+                            </select>
 
+                        </div>
+
+                        <div class="col-2">
+                            <select name="year" id="yearid" class="frm=select">
+                                <option value="all">All Years</option>
+                                <option value="Belgium">2025</option>
+                                <option value="France">2024</option>
+                                <option value="Portugal">2023</option>
+                                <option value="Spain">2022</option>
+                            </select>
+
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-primary">Filter</button>
+                        </div>
+
+                        <div class="col-4">
+
+                        </div>
+                    </div>
                 </form>
             </div>
 
             <div class="row">
                 <div class="col-4">
-                    <ul>
+                    <ul id="wineList">
                         <li>BOLCK WINE1</li>
                         <li>BOLCK WINE2</li>
                         <li>BOLCK WINE3</li>
@@ -63,8 +81,8 @@
                 </div>
                 <div class="col-8">
                     <div class="row">
-                        <div class="col">PHOTO</div>
-                        <div class="col">DETAIL</div>
+                        <div class="col text-center" id="photo">PHOTO</div>
+                        <div class="col" id="photo">DETAIL</div>
                     </div>
 
                     <div class="row">
