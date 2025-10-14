@@ -24,14 +24,38 @@
     <main class="container">
         <div class="row">
             <div class="col">
-                <form action="#" method="get">
-
+                <form action="#" method="get" class="row mb-3" id="frmSearch">
+                    <div class="col-2">
+                        <label for="keyword" class="form-label" style="display: none;">Keyword</label>
+                        <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Enter keyword here...">
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-primary" id="btSearch">Search</button>
+                    </div>
+                    <div class="col-2">
+                        <select class="form-select" aria-label="Default select example" name="country" id="country">
+                            <option selected>All countries</option>
+                            <option value="Belgium">Belgium</option>
+                            <option value="France">France</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <select class="form-select" aria-label="Default select example" name="year" id="year">
+                            <option selected>All years</option>
+                            <option>2000</option>
+                            <option>2010</option>
+                        </select>
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-primary" id="btFilter">Filter</button>
+                    </div>
+                    <div class="col-4"></div>
                 </form>
             </div>
         </div>
         <div class="row">
             <div class="col-4">
-                <ul>
+                <ul id="wineList">
                     <li>WINE 1</li>
                     <li>WINE 2</li>
                     <li>WINE 3</li>
@@ -39,11 +63,11 @@
             </div>
             <div class="col-8">
                 <div class="row">
-                    <div class="col text-center">PHOTO</div>
-                    <div class="col">DETAILS</div>
+                    <div class="col text-center" id="photo">PHOTO</div>
+                    <div class="col" id="details">DETAILS</div>
                 </div>
                 <div class="row">
-                    <div class="col">COMMENTAIRES</div>
+                    <div class="col" id="comments">COMMENTAIRES</div>
                 </div>
             </div>
         </div>
