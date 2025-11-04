@@ -2,6 +2,8 @@
 const API_URL = 'https://cruth.phpnet.org/epfc/caviste/public/index.php/api';
 const PHOTOS_URL = 'https://cruth.phpnet.org/epfc/caviste/public/pics/';
 
+let selectedWine = undefined;   //Vin sélectionné
+
 fetch(API_URL + '/wines')
 .then(response => response.json())
 .then(data => {
@@ -22,14 +24,59 @@ fetch(API_URL + '/wines')
 
             let results = data.filter(wine => wineId==wine.id);
             
-            let wine = results.length>0 ? results[0] : undefined;
+            selectedWine = results.length>0 ? results[0] : undefined;
 
-            console.log(wine);
+            console.log(selectedWine);
             //Affichage de la photo du vin
             const photo = document.querySelector('#photo');
             photo.src = PHOTOS_URL + wine.picture;
+            photo.alt = wine.name;
+
+            //Afficher les détails
+            let badge = document.querySelector("#details h2 span.badge");
+            badge.innerHTML = wineId;
+
+            let h2 = document.querySelector("#details h2");
+            let wineName = document.createTextNode(' '+wine.name);
+            h2.innerHTML = '';
+            h2.appendChild(badge);
+            h2.appendChild(wineName);
+
+            let spanGrapes = document.querySelector("#grapes span");
+            spanGrapes.innerHTML = wine.grapes;
+
+            let spanCountry = document.querySelector("#country span");
+            spanCountry.innerHTML = wine.country;
+
+            //...
+
+            let divInfos = document.querySelector("#infos");
+            divInfos.innerHTML = wine.description;
         });
 
         ULWineList.appendChild(LI);
     });
+
+    //Sélectionner le lien des commentaires
+    let linkCommentaires = document.querySelector("#linkCommentaires");
+
+    //Ajouter un gestionnaire d'évènement clic
+    linkCommentaires.addEventListener('click', function(e) {    //console.log('ok');
+        //Récupérer tous les commentaires du vin sélectionné
+        console.log(selectedWine);
+        
+            //Envoyer une requête Ajax à l'API Caviste
+        fetch(API_URL + '/wines/'+selectedWine.id+'/comments')   //TODO mettre le bon id de vin
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        });
+
+        //Afficher ces commentaires dans le div "infos"
+        let divInfos = document.querySelector("#infos");
+        
+    });
+
+    
+
 })

@@ -57,7 +57,7 @@
         <div class="row">
             <div class="col-4">
                 <ul id="wineList" class="list-group">
-                    <li>WINE 1</li>
+                    <li data-id="21" class="list-item">WINE 1</li>
                     <li>WINE 2</li>
                     <li>WINE 3</li>
                 </ul>
@@ -69,10 +69,13 @@
                     </div>
                     <div class="col" id="details">
                         <h2><span class="badge text-bg-secondary">WINE_ID</span> WINE_NAME</h2>
-                        <p><strong>FIELD:</strong> <span>VALUE</span></p>
-                        <p><strong>FIELD:</strong> <span>VALUE</span></p>
-                        <p><strong>FIELD:</strong> <span>VALUE</span></p>
-                        <p><strong>FIELD:</strong> <span>VALUE</span></p>
+                        <p id="grapes"><strong>Grapes:</strong> <span>VALUE</span></p>
+                        <p id="country"><strong>Country:</strong> <span>VALUE</span></p>
+                        <p id="region"><strong>Region:</strong> <span>VALUE</span></p>
+                        <p id="year"><strong>Year:</strong> <span>VALUE</span></p>
+                        <p id="capacity"><strong>Capacity:</strong> <span>VALUE</span></p>
+                        <p id="color"><strong>Color:</strong> <span>VALUE</span></p>
+                        <p id="price"><strong>Price:</strong> <span>VALUE</span></p>
 
                         <button><i class="bi bi-camera"></i> Add a picture (0/3)</button>
                         <button><i class="bi bi-pencil"></i> Add a note</button>
@@ -81,7 +84,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col" id="comments">COMMENTAIRES</div>
+                    <ul class="nav nav-tabs" id="listInfos">
+                        <li class="nav-item">
+                            <a id="linkDescription" class="nav-link active" aria-current="page" href="#">Description</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="linkCommentaires" class="nav-link" href="#">Commentaires</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="linkNotes" class="nav-link disabled" aria-disabled="true">Notes personnelles</a>
+                        </li>
+                    </ul>
+                    <div class="col" id="infos">Infos complémentaires</div>
                 </div>
             </div>
         </div>
