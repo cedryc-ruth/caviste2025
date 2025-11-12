@@ -2,6 +2,7 @@
 //console.log('ok');
 const API_URL = 'https://cruth.phpnet.org/epfc/caviste/public/index.php/api';
 const PHOTOS_URL = 'https://cruth.phpnet.org/epfc/caviste/public/pics/';
+let idVin = "";
 
 fetch(API_URL + '/wines')
     .then(response => response.json())
@@ -10,7 +11,7 @@ fetch(API_URL + '/wines')
         ULWineList.innerHTML = '';
 
         data.forEach(wine => {
-            console.log(wine);
+            //  console.log(wine.capacity);
 
             //ULWineList.innerHTML += `<li data-wine-id="${wine.id}" class="list-group-item" onclick="....">${wine.name}</li>`   //Solution 1
             let LI = document.createElement('li');              //Solution 2
@@ -19,13 +20,14 @@ fetch(API_URL + '/wines')
             LI.dataset.wineId = wine.id;
 
             LI.addEventListener('click', function (e) {
-                let wineId = LI.dataset.wineId;
+                let wineId =
+                    idVin = LI.dataset.wineId;
 
                 let results = data.filter(function (wine) { return wineId == wine.id });
 
                 let wine = results.length > 0 ? results[0] : undefined;
 
-                console.log(wine);
+                //     console.log(wine);
                 //Affichage de la photo du vin
                 const photo = document.querySelector('#photo');
                 photo.src = PHOTOS_URL + wine.picture;
@@ -61,16 +63,71 @@ fetch(API_URL + '/wines')
                 let yearcontent = document.createTextNode(wine.year);
                 year.innerHTML = "";
                 year.appendChild(yearcontent);
+                //permet d'ajouter la capacité du vin;
+                let capacity = document.querySelector("#details #capacity");
+                let wineCapacity = document.createTextNode(wine.capacity);
+                capacity.innerHTML = "";
+                capacity.appendChild(wineCapacity);
 
-
-
-
-
+                //permet d'ajouter la couleur du vin 
+                let color = document.querySelector("#details #color");
+                let colorcontent = wine.color;
+                color.innerHTML = colorcontent;
+                //permet d'ajouter le prix
+                let price = document.querySelector("#details #price");
+                let priceContent = wine.price;
+                price.innerHTML = priceContent;
 
             });
 
-
-
             ULWineList.appendChild(LI);
+        })
+
+
+    });
+
+//permet d'ajouter la description du vin 
+let description = document.querySelectorAll("#wineList, #linkDescriptions");
+
+description.forEach(function (description) {
+
+    description.addEventListener('click', function (e) {
+
+
+        fetch('https://cruth.phpnet.org/epfc/caviste/public/index.php/api/wines/' + idVin)
+            .then(response => response.json())
+            .then(data => {
+
+                //console.log(data[0].id);
+                let decriptionContent = data[0].description;
+                let infos = document.querySelector("#infos");
+                infos.innerHTML = decriptionContent;
+
+            });
+    });
+
+})
+
+//permet d'ajouter les commetaires du vin 
+let navlik = document.querySelector("#linkCommentaires");
+navlik.addEventListener('click', function (e) {
+
+    fetch('https://cruth.phpnet.org/epfc/caviste/public/index.php/api/wines/' + idVin + '/comments')
+        .then(response => response.json())
+        .then(data => {
+
+            let CommentContent = "";
+            data.forEach(comments => {
+
+                CommentContent = CommentContent + comments.content + ", ";
+
+            })
+            let infos = document.querySelector("#infos");
+            infos.innerHTML = CommentContent;
+
         });
-    })
+
+})
+
+
+
