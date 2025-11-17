@@ -12,19 +12,108 @@ fetch(API_URL + '/wines')
         ULWineList.innerHTML = '';
 
         // LISTE DES VINS
-        data.forEach(wine => {
-            let LI = document.createElement('li');
-            LI.innerHTML = wine.name;
-            LI.classList.add('list-group-item');
-            LI.dataset.wineId = wine.id;
+        MainList();
 
-            LI.addEventListener('click', function () {
-                idVin = wine.id;
-                affichage(wine);
+        function MainList() {
+            data.forEach(wine => {
+                let LI = document.createElement('li');
+                LI.innerHTML = wine.name;
+                LI.classList.add('list-group-item');
+                LI.dataset.wineId = wine.id;
+
+                LI.addEventListener('click', function () {
+                    idVin = wine.id;
+                    affichage(wine);
+                });
+
+                ULWineList.appendChild(LI);
             });
+        }
 
-            ULWineList.appendChild(LI);
-        });
+        //permeet d'appliquer le filtre sur le pays et l'année
+        let btfiltre = document.querySelector('#btFilter');
+        btfiltre.addEventListener('click', function (e) {
+
+            //  permet de reafficher la liste de vin apres avoir remis
+            //  les valeur de filltre a All et cliquer sur filtrer  
+            MainList();
+
+            let filtercountry = false;
+            let filteryear = false;
+            let countryval = document.getElementById("country").value.trim().toLowerCase();
+            let yearval = document.getElementById("year").value.trim().toLowerCase();
+            if (countryval != "all countries") {
+                filtercountry = true;
+            }
+            if (yearval != "all years") {
+                filteryear = true;
+            }
+            if (filtercountry || filteryear) {
+                ULWineList.innerHTML = "";
+                data.forEach(wine => {
+                    let LI = document.createElement('li');
+                    if (filtercountry) {
+                        if (filteryear) {
+
+                            if (wine.country.toLowerCase() == countryval && wine.year == yearval) {
+                                console.log(wine.year)
+                                console.log(wine.country)
+                                LI.innerHTML = wine.name;
+                                LI.classList.add('list-group-item');
+                                LI.dataset.wineId = wine.id;
+                                ULWineList.appendChild(LI);
+                                LI.addEventListener('click', function () {
+                                    idVin = wine.id;
+                                    affichage(wine);
+
+                                });
+
+
+
+
+                                //  affichage(wine);
+                            }
+                        }
+                    }
+                    if (!filtercountry) {
+                        if (filteryear) {
+                             LI = document.createElement('li');
+                            if (wine.year == yearval) {
+                                console.log(wine.year);
+                                LI.innerHTML = wine.name;
+                                LI.classList.add('list-group-item');
+                                LI.dataset.wineId = wine.id;
+                                ULWineList.appendChild(LI);
+                                LI.addEventListener('click', function () {
+                                    idVin = wine.id;
+                                    affichage(wine);
+                                });
+                            }
+                        }
+                    }
+                    if (!filteryear) {
+                        if (filtercountry) {
+                             LI = document.createElement('li');
+                            if (wine.country.toLowerCase() == countryval) {
+                                LI.innerHTML = wine.name;
+                                LI.classList.add('list-group-item');
+                                LI.dataset.wineId = wine.id;
+                                ULWineList.appendChild(LI);
+                                LI.addEventListener('click', function () {
+                                    idVin = wine.id;
+                                    affichage(wine);
+                                });
+                            }
+
+                        }
+                    }
+
+
+                });
+            }
+
+
+        })
 
 
         //permet de rechercher un vin dans la liste
@@ -44,7 +133,7 @@ fetch(API_URL + '/wines')
 
                     LI.addEventListener('click', function () {
                         idVin = wine.id;
-                        affichage(wine);
+                        //  affichage(wine);
                     });
 
                     ULWineList.appendChild(LI);
@@ -53,9 +142,9 @@ fetch(API_URL + '/wines')
             });
         });
 
+
+
     });
-
-
 
 // FONCTION PRINCIPALE D’AFFICHAGE DES DETAILS DU VIN
 
@@ -123,11 +212,14 @@ function chargercomments(wineID) {
     fetch(API_URL + '/wines/' + wineID + '/comments')
         .then(response => response.json())
         .then(data => {
-            let CommentContent = data.map(c => c.content).join("<br><br>");
+
+            //map() parcourt un tableau et retourne un nouveau tableau 
+            // contenant le résultat. ici il retourne un tableau contenant
+            //seulement les commentaires
+            let CommentContent = data.map(comments => comments.content).join(", ");
             document.querySelector("#infos").innerHTML = CommentContent;
         });
 }
-
 
 //permet de charger la description quand on clic dessus
 document.querySelector("#linkDescriptions").addEventListener('click', () => {
@@ -138,3 +230,17 @@ document.querySelector("#linkDescriptions").addEventListener('click', () => {
 document.querySelector("#linkCommentaires").addEventListener('click', () => {
     if (idVin) chargercomments(idVin);
 });
+
+function Selectedcountry() {
+    let countryFiltre = document.querySelector("#country").value.trim().toLowerCase();
+    return countryFiltre;
+}
+
+function SelectedYear() {
+    let yearFiltre = document.querySelector("#year").value.trim().toLowerCase();
+    return yearFiltre;
+}
+
+/*if(idVin) {
+    FiltreBycountry(idVin);
+} */
