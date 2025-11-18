@@ -2,144 +2,85 @@
 const API_URL = 'https://cruth.phpnet.org/epfc/caviste/public/index.php/api';
 const PHOTOS_URL = 'https://cruth.phpnet.org/epfc/caviste/public/pics/';
 let idVin = "";
+let gData;  //DEBUG in console
+
+function MainList(data, ULWineList) {
+    ULWineList.innerHTML = "";
+
+    data.forEach(wine => {
+        let LI = document.createElement('li');
+        LI.innerHTML = wine.name;
+        LI.classList.add('list-group-item');
+        LI.dataset.wineId = wine.id;
+
+        LI.addEventListener('click', function () {
+            idVin = wine.id;
+            affichage(wine);
+
+            activateThumbnail(document.querySelector('#linkDescriptions'));
+        });
+
+        ULWineList.appendChild(LI);
+    });
+}
+
+//A la fin du chargement de la page
+window.addEventListener('load', () => {
+    //Désactiver tous les liens
+    document.querySelectorAll('a:not(.menu-link)').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+        });
+    });
+});
 
 // CHARGEMENT INITIAL DES VINS
 
 fetch(API_URL + '/wines')
     .then(response => response.json())
-    .then(data => {
+    .then(data => {     gData = data;   //DEBUG in console
         const ULWineList = document.querySelector('#wineList');
         ULWineList.innerHTML = '';
 
         // LISTE DES VINS
-        MainList();
+        MainList(data, ULWineList);
 
-        function MainList() {
-            data.forEach(wine => {
-                let LI = document.createElement('li');
-                LI.innerHTML = wine.name;
-                LI.classList.add('list-group-item');
-                LI.dataset.wineId = wine.id;
-
-                LI.addEventListener('click', function () {
-                    idVin = wine.id;
-                    affichage(wine);
-                });
-
-                ULWineList.appendChild(LI);
-            });
-        }
-
-        //permeet d'appliquer le filtre sur le pays et l'année
+        //permet d'appliquer le filtre sur le pays et l'année
         let btfiltre = document.querySelector('#btFilter');
         btfiltre.addEventListener('click', function (e) {
+            let countryVal = document.getElementById("country").value.trim();
+            let yearVal = document.getElementById("year").value.trim();
 
-            //  permet de reafficher la liste de vin apres avoir remis
-            //  les valeur de filltre a All et cliquer sur filtrer  
-            MainList();
+            let filterCountry = countryVal != "";
+            let filterYear = yearVal != "";
+            
+            //Filtrer la liste par année et/ou par pays
+            let filteredData = filterYear ? data.filter(wine => wine.year==yearVal) : data;
+            filteredData = filterCountry ? filteredData.filter(wine => wine.country==countryVal) : filteredData;
 
-            let filtercountry = false;
-            let filteryear = false;
-            let countryval = document.getElementById("country").value.trim().toLowerCase();
-            let yearval = document.getElementById("year").value.trim().toLowerCase();
-            if (countryval != "all countries") {
-                filtercountry = true;
-            }
-            if (yearval != "all years") {
-                filteryear = true;
-            }
-            if (filtercountry || filteryear) {
-                ULWineList.innerHTML = "";
-                data.forEach(wine => {
-                    let LI = document.createElement('li');
-                    if (filtercountry) {
-                        if (filteryear) {
-
-                            if (wine.country.toLowerCase() == countryval && wine.year == yearval) {
-                                console.log(wine.year)
-                                console.log(wine.country)
-                                LI.innerHTML = wine.name;
-                                LI.classList.add('list-group-item');
-                                LI.dataset.wineId = wine.id;
-                                ULWineList.appendChild(LI);
-                                LI.addEventListener('click', function () {
-                                    idVin = wine.id;
-                                    affichage(wine);
-
-                                });
-
-
-
-
-                                //  affichage(wine);
-                            }
-                        }
-                    }
-                    if (!filtercountry) {
-                        if (filteryear) {
-                             LI = document.createElement('li');
-                            if (wine.year == yearval) {
-                                console.log(wine.year);
-                                LI.innerHTML = wine.name;
-                                LI.classList.add('list-group-item');
-                                LI.dataset.wineId = wine.id;
-                                ULWineList.appendChild(LI);
-                                LI.addEventListener('click', function () {
-                                    idVin = wine.id;
-                                    affichage(wine);
-                                });
-                            }
-                        }
-                    }
-                    if (!filteryear) {
-                        if (filtercountry) {
-                             LI = document.createElement('li');
-                            if (wine.country.toLowerCase() == countryval) {
-                                LI.innerHTML = wine.name;
-                                LI.classList.add('list-group-item');
-                                LI.dataset.wineId = wine.id;
-                                ULWineList.appendChild(LI);
-                                LI.addEventListener('click', function () {
-                                    idVin = wine.id;
-                                    affichage(wine);
-                                });
-                            }
-
-                        }
-                    }
-
-
-                });
-            }
-
-
-        })
-
+            //Actualiser la liste des vins dans la page
+            MainList(filteredData, ULWineList);
+        });
 
         //permet de rechercher un vin dans la liste
         let btsearch = document.querySelector("#btSearch");
         btsearch.addEventListener('click', function () {
-            ULWineList.innerHTML = '';
-
             let searchval = document.querySelector("#keyword").value.trim().toLowerCase();
 
-            data.forEach(wine => {
-                if (searchval !== "" && wine.name.toLowerCase().includes(searchval)) {
+            //Filtrer la liste par année et/ou par pays
+            let filteredData = searchval !== "" ? data.filter(wine => wine.name.toLowerCase().includes(searchval)) : data;
 
-                    let LI = document.createElement('li');
-                    LI.innerHTML = wine.name;
-                    LI.classList.add('list-group-item');
-                    LI.dataset.wineId = wine.id;
+            MainList(filteredData, ULWineList);
+        });
 
-                    LI.addEventListener('click', function () {
-                        idVin = wine.id;
-                        //  affichage(wine);
-                    });
+        //Gestion de la touche ENTER
+        let editKeyword = document.querySelector("#keyword");
+        editKeyword.addEventListener('keypress', (e) => {   //console.log(e);
+            if(e.keyCode==13) {
+                e.preventDefault();
 
-                    ULWineList.appendChild(LI);
-                    affichage(wine);
-                }
-            });
+                btsearch.click();
+            }
         });
 
 
@@ -208,7 +149,7 @@ function Chargerdescription(wineID) {
 
 // CHARGER LES COMMENTAIRES
 
-function chargercomments(wineID) {
+function chargerComments(wineID) {
     fetch(API_URL + '/wines/' + wineID + '/comments')
         .then(response => response.json())
         .then(data => {
@@ -221,14 +162,53 @@ function chargercomments(wineID) {
         });
 }
 
+function chargerNotes(wineID) {
+    const options = {
+        'method': 'GET',
+        'mode': 'cors',
+        'headers': {
+            'content-type': 'application/json; charset=utf-8',
+            'Authorization': 'Basic '+btoa('ced:123')	//Try with other credentials (login:password)
+        }
+    };
+
+    fetch(API_URL + '/wines/' + wineID + '/notes', options)
+    .then(response => response.json())
+    .then(data => {     console.log(data);
+        document.querySelector("#infos").innerHTML = data.note ? data.note : '';
+    });
+}
+
+function activateThumbnail(selectedLink) {
+    //Désactiver la classe active de tous les onglets
+    selectedLink.parentElement.parentElement.querySelectorAll('a.nav-link')
+        
+    const links = document.querySelector('#linkDescriptions').parentElement.parentElement.querySelectorAll('a.nav-link')
+    links.forEach(link => {link.classList.remove('active')})
+
+    //Activer l'onglet 'Commentaires'
+    selectedLink.classList.add('active');
+}
+
 //permet de charger la description quand on clic dessus
-document.querySelector("#linkDescriptions").addEventListener('click', () => {
+document.querySelector("#linkDescriptions").addEventListener('click', (e) => {
     if (idVin) Chargerdescription(idVin);
+
+    activateThumbnail(e.target);
 });
 
 //permet de charger les commentaire  quand on clic dessus
-document.querySelector("#linkCommentaires").addEventListener('click', () => {
-    if (idVin) chargercomments(idVin);
+document.querySelector("#linkCommentaires").addEventListener('click', (e) => {
+    if (idVin) chargerComments(idVin);
+    
+    activateThumbnail(e.target);
+});
+
+//permet de charger les notes  quand on clic dessus
+document.querySelector("#linkNotes").addEventListener('click', (e) => {
+    if (idVin) chargerNotes(idVin);
+    
+    activateThumbnail(e.target);
 });
 
 function Selectedcountry() {
